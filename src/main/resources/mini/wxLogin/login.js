@@ -5,64 +5,35 @@ Page({
   },
 
   onLoad: function (params) {
-    
-  },
 
-  onGotUserInfo: function (e) {
-    console.log(e.detail.errMsg)
-    console.log(e.detail.userInfo)
-    console.log(e.detail.rawData)
-
-    this.doLogin();
   },
 
   // 登录  
   doLogin: function (e) {
-    var me = this;
-    
-    //调用登录接口，获取 code
+    console.log(e.detail.errMsg)
+    console.log(e.detail.userInfo)
+    console.log(e.detail.rawData)
+
     wx.login({
-      success: function (res) {
-        wx.getSetting({
-          success: function (setRes) {
-            
-            // 判断是否已授权
-            if (!setRes.authSetting['scope.userInfo']) {
-              
-              // 跳转到登录页面，让用户去做授权
-            } else {
-              
-              //获取用户信息
-              wx.getUserInfo({
-                lang: "zh_CN",
-                success: function (userRes) {
-                  
-                  //发起网络请求
-                  console.log("获取用户信息：" + userRes);
-                  wx.login({
-                    success: function (res) {
-                      console.log(res);
-                      if (res.code) {
-                        // 发起网络请求
-                        wx.request({
-                          url: app.serverUrl + '/wxLogin?code=' + res.code,
-                          method: "POST",
-                          success:function() {
-                            // 保存用户信息到缓存
-                            app.setGlobalUserInfo(userRes);
-                          }
-                        })
-                        
-                      } else {
-                        console.log('登录失败！' + res.errMsg)
-                      }
-                    }
-                  });
-                }
-              })
-            }
+      success: function(res) {
+        console.log(res)
+        // 获取登录的临时凭证
+        var code = res.code;
+        // 调用后端，获取微信的session_key, secret
+        wx.request({
+          url: "http://192.168.1.2:8080/wxLogin?code=" + code,
+          method: "POST",
+          success: function(result) {
+            console.log(result);
+            // 保存用户信息到本地缓存，可以用作小程序端的拦截器
+            app.setGlobalUserInfo(e.detail.userInfo);
+            wx.redirectTo({
+              url: '../index/index',
+            })
           }
         })
+
+
       }
     })
   }

@@ -25,7 +25,7 @@
             </view>
 
             <view>
-                <button class="goRegistBtn" open-type="getUserInfo" type="warn" bindgetuserinfo='onGotUserInfo'>微信登录</button>
+                <button class="goRegistBtn" type="warn" open-type='getUserInfo' bindgetuserinfo='doLogin'>微信登录</button>
             </view>
         </form>
     </view>

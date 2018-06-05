@@ -4,6 +4,7 @@ public class WXSessionModel {
 
 	private String session_key;
 	private String openid;
+	
 	public String getSession_key() {
 		return session_key;
 	}
